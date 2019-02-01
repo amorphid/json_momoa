@@ -7,6 +7,10 @@ defmodule JSONMomoa do
   # API #
   #######
 
+  def parse("[" <> data) do
+    in_array(data, [])
+  end
+
   def parse("{" <> data) do
     in_object(data, %{})
   end
@@ -18,6 +22,10 @@ defmodule JSONMomoa do
   ###########
   # Private #
   ###########
+
+  def in_array("]" <> data, acc) do
+    {acc, data}
+  end
 
   def in_object("}" <> data, acc) do
     {acc, data}

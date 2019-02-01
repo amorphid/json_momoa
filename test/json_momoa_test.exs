@@ -5,9 +5,16 @@ defmodule JSONMomoaTest do
 
   setup do
     %{
+      empty_array: "[]",
       empty_object: "{}",
       empty_string: "\"\""
     }
+  end
+
+  describe "empty array" do
+    test "return empty list", c do
+      assert @subject.parse(c.empty_array) == {[], ""}
+    end
   end
 
   describe "empty object" do
