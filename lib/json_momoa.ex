@@ -11,6 +11,10 @@ defmodule JSONMomoa do
     in_string(data, "")
   end
 
+  def parse(<<head::(8), _::bits()>> = data) when head in ?0..?9 do
+    in_non_negative_number(data)
+  end
+
   def parse("{" <> data) do
     in_object(data, %{})
   end
@@ -37,6 +41,10 @@ defmodule JSONMomoa do
 
   defp in_array("]" <> data, acc) do
     {acc, data}
+  end
+
+  defp in_non_negative_number(data) do
+    Integer.parse(data)
   end
 
   defp in_object("}" <> data, acc) do
