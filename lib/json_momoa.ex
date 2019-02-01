@@ -27,19 +27,23 @@ defmodule JSONMomoa do
     {false, data}
   end
 
+  def parse("null" <> data) do
+    {nil, data}
+  end
+
   ###########
   # Private #
   ###########
 
-  def in_array("]" <> data, acc) do
+  defp in_array("]" <> data, acc) do
     {acc, data}
   end
 
-  def in_object("}" <> data, acc) do
+  defp in_object("}" <> data, acc) do
     {acc, data}
   end
 
-  def in_string("\"" <> data, acc) do
+  defp in_string("\"" <> data, acc) do
     {acc, data}
   end
 end
