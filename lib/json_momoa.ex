@@ -3,16 +3,19 @@ defmodule JSONMomoa do
   Documentation for JSONMomoa.
   """
 
-  @doc """
-  Hello world.
+  #######
+  # API #
+  #######
 
-  ## Examples
+  def parse("\"" <> data) do
+    in_string(data, "")
+  end
 
-      iex> JSONMomoa.hello()
-      :world
+  ###########
+  # Private #
+  ###########
 
-  """
-  def hello do
-    :world
+  def in_string("\"" <> data, acc) do
+    {acc, data}
   end
 end
