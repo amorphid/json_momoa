@@ -19,6 +19,10 @@ defmodule JSONMomoa do
     in_string(data, "")
   end
 
+  def parse("true" <> data) do
+    {true, data}
+  end
+
   ###########
   # Private #
   ###########
