@@ -15,6 +15,10 @@ defmodule JSONMomoa do
     in_non_negative_number(data)
   end
 
+  def parse("-" <> data) do
+    in_negative_number(data)
+  end
+
   def parse("{" <> data) do
     in_object(data, %{})
   end
@@ -41,6 +45,11 @@ defmodule JSONMomoa do
 
   defp in_array("]" <> data, acc) do
     {acc, data}
+  end
+
+  defp in_negative_number(data) do
+    {non_neg, data2} = in_non_negative_number(data)
+    {non_neg * -1, data2}
   end
 
   defp in_non_negative_number(data) do

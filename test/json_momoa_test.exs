@@ -10,6 +10,7 @@ defmodule JSONMomoaTest do
       empty_string: "\"\"",
       false: "false",
       one: "1",
+      negative_one: "-1",
       null: "null",
       true: "true",
       zero: "0"
@@ -37,6 +38,12 @@ defmodule JSONMomoaTest do
   describe "parsing false" do
     test "return false", c do
       assert @subject.parse(c.false) == {false, ""}
+    end
+  end
+
+  describe "parsing negative number" do
+    test "returns negative number", c do
+      assert @subject.parse(c.negative_one) == {-1, ""}
     end
   end
 
