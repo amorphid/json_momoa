@@ -7,20 +7,24 @@ defmodule JSONMomoa do
   # API #
   #######
 
-  def parse("[" <> data) do
-    in_array(data, [])
+  def parse("\"" <> data) do
+    in_string(data, "")
   end
 
   def parse("{" <> data) do
     in_object(data, %{})
   end
 
-  def parse("\"" <> data) do
-    in_string(data, "")
+  def parse("[" <> data) do
+    in_array(data, [])
   end
 
   def parse("true" <> data) do
     {true, data}
+  end
+
+  def parse("false" <> data) do
+    {false, data}
   end
 
   ###########

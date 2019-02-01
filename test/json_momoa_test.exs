@@ -8,6 +8,7 @@ defmodule JSONMomoaTest do
       empty_array: "[]",
       empty_object: "{}",
       empty_string: "\"\"",
+      false: "false",
       true: "true"
     }
   end
@@ -27,6 +28,12 @@ defmodule JSONMomoaTest do
   describe "parsing empty string" do
     test "return empty string", c do
       assert @subject.parse(c.empty_string) == {"", ""}
+    end
+  end
+
+  describe "parsing false" do
+    test "return false", c do
+      assert @subject.parse(c.false) == {false, ""}
     end
   end
 
