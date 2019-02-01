@@ -5,8 +5,15 @@ defmodule JSONMomoaTest do
 
   setup do
     %{
+      empty_object: "{}",
       empty_string: "\"\""
     }
+  end
+
+  describe "empty object" do
+    test "return empty map", c do
+      assert @subject.parse(c.empty_object) == {%{}, ""}
+    end
   end
 
   describe "empty string" do
