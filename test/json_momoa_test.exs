@@ -3,66 +3,117 @@ defmodule JSONMomoaTest do
 
   @subject JSONMomoa
 
-  setup do
-    %{
-      empty_array: "[]",
-      empty_object: "{}",
-      empty_string: "\"\"",
-      false: "false",
-      one: "1",
-      negative_one: "-1",
-      null: "null",
-      true: "true",
-      zero: "0"
-    }
-  end
-
   describe "parsing empty array" do
-    test "return empty list", c do
-      assert @subject.parse(c.empty_array) == {[], ""}
+    test "return empty list" do
+      assert @subject.parse("[]") === {[], ""}
     end
   end
 
   describe "parsing empty object" do
-    test "return empty map", c do
-      assert @subject.parse(c.empty_object) == {%{}, ""}
+    test "return empty map" do
+      assert @subject.parse("{}") === {%{}, ""}
     end
   end
 
   describe "parsing empty string" do
-    test "return empty string", c do
-      assert @subject.parse(c.empty_string) == {"", ""}
+    test "return empty string" do
+      assert @subject.parse("\"\"") === {"", ""}
     end
   end
 
   describe "parsing false" do
-    test "return false", c do
-      assert @subject.parse(c.false) == {false, ""}
+    test "return false" do
+      assert @subject.parse("false") === {false, ""}
     end
   end
 
-  describe "parsing negative number" do
-    test "returns negative number", c do
-      assert @subject.parse(c.negative_one) == {-1, ""}
+  describe "parsing the float 0.0" do
+    test "returns 0.0" do
+      assert @subject.parse("0.0") === {0.0, ""}
     end
   end
 
-  describe "parsing non negative number" do
-    test "returns non negative number", c do
-      assert @subject.parse(c.zero) == {0, ""}
-      assert @subject.parse(c.one) == {1, ""}
+  describe "parsing the float 0.5" do
+    test "returns 0.5" do
+      assert @subject.parse("0.5") === {0.5, ""}
+    end
+  end
+
+  describe "parsing the float 0.55" do
+    test "returns 0.55" do
+      assert @subject.parse("0.55") === {0.55, ""}
+    end
+  end
+
+  describe "parsing the float -1234.5678" do
+    test "returns -1234.5678" do
+      assert @subject.parse("-1234.5678") === {-1234.5678, ""}
+    end
+  end
+
+  describe "parsing the float 1234.5678" do
+    test "returns 1234.5678" do
+      assert @subject.parse("1234.5678") === {1234.5678, ""}
+    end
+  end
+
+  describe "parsing the float 123.456e78" do
+    test "returns 1.23456e80" do
+      assert @subject.parse("1.23456e80") === {1.23456e80, ""}
+    end
+  end
+
+  describe "parsing the float 123.456e+78" do
+    test "returns 1.23456e80" do
+      assert @subject.parse("123.456e+78") === {1.23456e80, ""}
+    end
+  end
+
+  describe "parsing the float 123.456e-78" do
+    test "returns 1.23456e80" do
+      assert @subject.parse("123.456e-78") === {1.23456e-76, ""}
+    end
+  end
+
+  describe "parsing the interger -1" do
+    test "returns -1" do
+      assert @subject.parse("-1") === {-1, ""}
+    end
+  end
+
+  describe "parsing the interger 0" do
+    test "returns 0" do
+      assert @subject.parse("0") === {0, ""}
+    end
+  end
+
+  describe "parsing the interger 1" do
+    test "returns 1" do
+      assert @subject.parse("1") === {1, ""}
+    end
+  end
+
+  describe "parsing the integer 55" do
+    test "returns 55" do
+      assert @subject.parse("55") === {55, ""}
+    end
+  end
+
+  describe "parsing the integer -1234567890" do
+    test "returns -1234567890" do
+      assert @subject.parse("-1234567890") === {-1234567890, ""}
     end
   end
 
   describe "parsing null" do
-    test "return nil", c do
-      assert @subject.parse(c.null) == {nil, ""}
+    test "return nil" do
+      assert @subject.parse("null") === {nil, ""}
     end
   end
 
   describe "parsing true" do
-    test "return true", c do
-      assert @subject.parse(c.true) == {true, ""}
+    test "return true" do
+      assert @subject.parse("true") === {true, ""}
     end
   end
 end

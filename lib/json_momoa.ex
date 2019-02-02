@@ -11,12 +11,8 @@ defmodule JSONMomoa do
     in_string(data, "")
   end
 
-  def parse(<<head::(8), _::bits()>> = data) when head in ?0..?9 do
-    in_non_negative_number(data)
-  end
-
-  def parse("-" <> data) do
-    in_negative_number(data)
+  def parse(<<head::(8), _::bits()>> = data) when head in ?0..?9 or head == ?- do
+    in_number(data)
   end
 
   def parse("{" <> data) do
@@ -47,13 +43,64 @@ defmodule JSONMomoa do
     {acc, data}
   end
 
-  defp in_negative_number(data) do
-    {non_neg, data2} = in_non_negative_number(data)
-    {non_neg * -1, data2}
+  defp in_digits(<<head::(8), tail::bits()>>, acc) when head in ?0..?9 do
+    in_digits(tail, [head | acc])
   end
 
-  defp in_non_negative_number(data) do
-    Integer.parse(data)
+  defp in_digits(data, acc) do
+    parse_integer_or_float(data, acc, [])
+  end
+
+  defp in_frac(<<head::(8), tail::bits()>>, acc) when head in ?0..?9 do
+    in_frac(tail, [head | acc])
+  end
+
+  defp in_frac(data, acc) do
+    in_maybe_exp(data, acc)
+  end
+
+  defp in_integer(<<head::(8), tail::bits()>>, acc) when head in ?0..?9 do
+    in_integer(tail, [head | acc])
+  end
+
+  defp in_integer(data, acc) do
+    in_maybe_frac(data, acc)
+  end
+
+  defp in_maybe_exp(<<head::(8), tail::bits()>>, acc) when head == ?E or head == ?e do
+    in_maybe_sign(tail, [?e | acc])
+  end
+
+  defp in_maybe_exp(data, acc) do
+    in_digits(data, acc)
+  end
+
+  defp in_maybe_frac("." <> data, acc) do
+    in_frac(data, [?. | acc])
+  end
+
+  defp in_maybe_frac(data, acc) do
+    in_maybe_exp(data, acc)
+  end
+
+  defp in_maybe_negative_number("-" <> data, acc) do
+    in_zero_or_onenine(data, [?- | acc])
+  end
+
+  defp in_maybe_negative_number(data, acc) do
+    in_zero_or_onenine(data, acc)
+  end
+
+  defp in_maybe_sign(<<head::(8), tail::bits()>>, acc) when head == ?+ or head == ?- do
+    in_digits(tail, [head | acc])
+  end
+
+  defp in_maybe_sign(data, acc)do
+    in_digits(data, acc)
+  end
+
+  defp in_number(data) do
+    in_maybe_negative_number(data, [])
   end
 
   defp in_object("}" <> data, acc) do
@@ -62,5 +109,30 @@ defmodule JSONMomoa do
 
   defp in_string("\"" <> data, acc) do
     {acc, data}
+  end
+
+  defp in_zero_or_onenine("0" <> data, acc) do
+    in_maybe_frac(data, [?0 | acc])
+  end
+
+  defp in_zero_or_onenine(<<head::(8), tail::bits()>>, acc) when head in ?1..?9 do
+    in_integer(tail, [head | acc])
+  end
+
+  defp parse_integer_or_float(data, [head | tail], acc) when head == ?e or head ==?. do
+    {num, ""} = 
+      [Enum.reverse(tail), head, acc]
+      |> IO.iodata_to_binary()
+      |> Float.parse()
+    {num, data}
+  end
+
+  defp parse_integer_or_float(data, [head | tail], acc) do
+    parse_integer_or_float(data, tail, [head | acc])
+  end
+
+  defp parse_integer_or_float(data, [], acc) do
+    {num, ""} = Integer.parse(IO.iodata_to_binary(acc))
+    {num, data}
   end
 end
