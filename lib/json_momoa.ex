@@ -45,8 +45,18 @@ defmodule JSONMomoa do
   # Private #
   ###########
 
+  defp in_array(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> in_array(acc)
+  end
+
   defp in_array("]" <> data, acc) do
-    {acc, data}
+    {Enum.reverse(acc), data}
+  end
+
+  defp in_array(data, acc) do
+    in_element(data, acc)
   end
 
   defp in_digits(<<head::(8), tail::bits()>>, acc) when head in ?0..?9 do
@@ -55,6 +65,31 @@ defmodule JSONMomoa do
 
   defp in_digits(data, acc) do
     parse_integer_or_float(data, acc, [])
+  end
+
+  defp in_element(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> in_element(acc)
+  end
+
+  defp in_element(data, acc) do
+    {element, data2} = parse(data)
+    in_element_or_array(data2, [element | acc])
+  end
+
+  defp in_element_or_array(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> in_element_or_array(acc)
+  end
+
+  defp in_element_or_array("," <> data, acc) do
+    in_element(data, acc)
+  end
+
+  defp in_element_or_array(data, acc) do
+    in_array(data, acc)
   end
 
   def in_escaped("\"" <> data, acc) do
@@ -140,17 +175,17 @@ defmodule JSONMomoa do
     in_maybe_exp(data, acc)
   end
 
-  defp in_maybe_key(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+  defp in_key_or_object(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
     tail
     |> String.trim_leading()
-    |> in_maybe_key(acc)
+    |> in_key_or_object(acc)
   end
 
-  defp in_maybe_key("," <> data, acc) do
+  defp in_key_or_object("," <> data, acc) do
     in_key(data, acc)
   end
 
-  defp in_maybe_key(data, acc) do
+  defp in_key_or_object(data, acc) do
     in_object(data, acc)
   end
 
@@ -200,7 +235,7 @@ defmodule JSONMomoa do
 
   defp in_value(data, key, acc) do
     {value, data2} = parse(data)
-    in_maybe_key(data2, Map.put(acc, key, value))
+    in_key_or_object(data2, Map.put(acc, key, value))
   end
 
   defp in_string("\"" <> data, acc) do

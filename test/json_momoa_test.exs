@@ -206,4 +206,16 @@ defmodule JSONMomoaTest do
       assert @subject.parse("{\"key0\":\"value0\",\"key1\":true}") === {%{"key0" => "value0", "key1" => true}, ""}
     end
   end
+
+  describe "parsing an array with 1 element" do
+    test "returns the expected list" do
+      assert @subject.parse("[\"element\"]") === {["element"], ""}
+    end
+  end
+
+  describe "parsing an array with 2 elements" do
+    test "returns the expected list" do
+      assert @subject.parse("[\"element0\",\"element1\"]") === {["element0", "element1"], ""}
+    end
+  end
 end
