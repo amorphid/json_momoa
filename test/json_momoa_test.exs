@@ -194,4 +194,16 @@ defmodule JSONMomoaTest do
       assert @subject.parse("true") === {true, ""}
     end
   end
+
+  describe "parsing an object with 1 key value pair" do
+    test "returns the expected map" do
+      assert @subject.parse("{\"key\":\"value\"}") === {%{"key" => "value"}, ""}
+    end
+  end
+
+  describe "parsing an object with 2 key value pairs" do
+    test "returns the expected map" do
+      assert @subject.parse("{\"key0\":\"value0\",\"key1\":true}") === {%{"key0" => "value0", "key1" => true}, ""}
+    end
+  end
 end

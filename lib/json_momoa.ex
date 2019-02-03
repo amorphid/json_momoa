@@ -105,6 +105,17 @@ defmodule JSONMomoa do
     in_maybe_exp(data, acc)
   end
 
+  defp in_key(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> in_key(acc)
+  end
+
+  defp in_key(data, acc) do
+    {key, data2} = parse(data)
+    in_value(data2, key, acc)
+  end
+
   defp in_integer(<<head::(8), tail::bits()>>, acc) when head in ?0..?9 do
     in_integer(tail, [head | acc])
   end
@@ -129,6 +140,20 @@ defmodule JSONMomoa do
     in_maybe_exp(data, acc)
   end
 
+  defp in_maybe_key(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> in_maybe_key(acc)
+  end
+
+  defp in_maybe_key("," <> data, acc) do
+    in_key(data, acc)
+  end
+
+  defp in_maybe_key(data, acc) do
+    in_object(data, acc)
+  end
+
   defp in_maybe_negative_number("-" <> data, acc) do
     in_zero_or_onenine(data, [?- | acc])
   end
@@ -149,9 +174,34 @@ defmodule JSONMomoa do
     in_maybe_negative_number(data, [])
   end
 
+  defp in_object(<<head::8, tail::bits()>>, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> in_object(acc)
+  end
+
   defp in_object("}" <> data, acc) do
     {acc, data}
-  end 
+  end
+
+  defp in_object(data, acc) do
+    in_key(data, acc)
+  end
+
+  defp in_value(<<head::8, tail::bits()>>, key, acc) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> in_value(key, acc)
+  end
+
+  defp in_value(":" <> data, key, acc) do
+    in_value(data, key, acc)
+  end
+
+  defp in_value(data, key, acc) do
+    {value, data2} = parse(data)
+    in_maybe_key(data2, Map.put(acc, key, value))
+  end
 
   defp in_string("\"" <> data, acc) do
     str = 
