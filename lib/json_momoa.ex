@@ -8,7 +8,7 @@ defmodule JSONMomoa do
   #######
 
   def parse("\"" <> data) do
-    in_string(data, "")
+    in_string(data, [])
   end
 
   def parse(<<head::(8), _::bits()>> = data) when head in ?0..?9 or head == ?- do
@@ -49,6 +49,46 @@ defmodule JSONMomoa do
 
   defp in_digits(data, acc) do
     parse_integer_or_float(data, acc, [])
+  end
+
+  def in_escaped("\"" <> data, acc) do
+    in_string(data, [?\" | acc])
+  end
+
+  def in_escaped("\\" <> data, acc) do
+    in_string(data, [?\\ | acc])
+  end
+
+  def in_escaped("/" <> data, acc) do
+    in_string(data, [?/ | acc])
+  end
+
+  def in_escaped("b" <> data, acc) do
+    in_string(data, [?\b | acc])
+  end
+
+  def in_escaped("f" <> data, acc) do
+    in_string(data, [?\f | acc])
+  end
+
+  def in_escaped("n" <> data, acc) do
+    in_string(data, [?\n | acc])
+  end
+
+  def in_escaped("r" <> data, acc) do
+    in_string(data, [?\r | acc])
+  end
+
+  def in_escaped("t" <> data, acc) do
+    in_string(data, [?\t | acc])
+  end
+
+  def in_escaped(<<?u::(8), hex0::(8), hex1::(8), hex2::(8), hex3::(8), tail::bits()>>, acc) do
+    {char, ""} = 
+      [hex0, hex1, hex2, hex3] 
+      |> to_string()
+      |> Integer.parse(16)
+    in_string(tail, [char | acc])
   end
 
   defp in_frac(<<head::(8), tail::bits()>>, acc) when head in ?0..?9 do
@@ -105,10 +145,22 @@ defmodule JSONMomoa do
 
   defp in_object("}" <> data, acc) do
     {acc, data}
-  end
+  end 
 
   defp in_string("\"" <> data, acc) do
-    {acc, data}
+    str = 
+      acc
+      |> Enum.reverse()
+      |> to_string()
+    {str, data}
+  end
+
+  defp in_string("\\" <> data, acc) do
+    in_escaped(data, acc)
+  end
+
+  defp in_string(<<head::utf8(), tail::bits()>>, acc) do
+    in_string(tail, [head | acc])
   end
 
   defp in_zero_or_onenine("0" <> data, acc) do
@@ -122,7 +174,7 @@ defmodule JSONMomoa do
   defp parse_integer_or_float(data, [head | tail], acc) when head == ?e or head ==?. do
     {num, ""} = 
       [Enum.reverse(tail), head, acc]
-      |> IO.iodata_to_binary()
+      |> to_string()
       |> Float.parse()
     {num, data}
   end
@@ -132,7 +184,7 @@ defmodule JSONMomoa do
   end
 
   defp parse_integer_or_float(data, [], acc) do
-    {num, ""} = Integer.parse(IO.iodata_to_binary(acc))
+    {num, ""} = Integer.parse(to_string(acc))
     {num, data}
   end
 end

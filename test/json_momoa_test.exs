@@ -21,6 +21,72 @@ defmodule JSONMomoaTest do
     end
   end
 
+  describe "parsing string \"abc\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"abc\"") === {"abc", ""}
+    end
+  end
+
+  describe "parsing string \"\\u0061\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\u0061\"") === {"a", ""}
+    end
+  end
+
+  describe "parsing string \"\\t\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\t\"") === {"\t", ""}
+    end
+  end
+
+  describe "parsing string \"\\r\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\r\"") === {"\r", ""}
+    end
+  end
+
+  describe "parsing string \"\\n\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\n\"") === {"\n", ""}
+    end
+  end
+
+  describe "parsing string \"\\f\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\f\"") === {"\f", ""}
+    end
+  end
+
+  describe "parsing string \"\\b\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\b\"") === {"\b", ""}
+    end
+  end
+
+  describe "parsing string \"\\/\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\/\"") === {"/", ""}
+    end
+  end
+
+  describe "parsing string \"\\\\\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\\\\"") === {"\\", ""}
+    end
+  end
+
+  describe "parsing string \"\\\"\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"\\\"\"") === {"\"", ""}
+    end
+  end
+
+  describe "parsing string \"hełło\"" do
+    test "returns expected string" do
+      assert @subject.parse("\"hełło\"") === {"hełło", ""}
+    end
+  end
+
   describe "parsing false" do
     test "return false" do
       assert @subject.parse("false") === {false, ""}
