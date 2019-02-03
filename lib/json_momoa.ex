@@ -8,4 +8,6 @@ defmodule JSONMomoa do
   #######
 
   defdelegate parse(data), to: JSONMomoa.Parser
+
+  defdelegate to_json(data), to: JSONMomoa.Encoder
 end
