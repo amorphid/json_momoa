@@ -8,4 +8,8 @@ defimpl Encoder, for: Atom do
   def to_json(true) do
     "true"
   end
+
+  def to_json(false) do
+    "false"
+  end
 end
