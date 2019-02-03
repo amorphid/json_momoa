@@ -14,4 +14,10 @@ defmodule JSONMomoa.EncoderTest do
       assert @subject.to_json(false) === "false"
     end
   end
+
+  describe "encoding null" do
+    test "returns the expected string" do
+      assert @subject.to_json(nil) === "null"
+    end
+  end
 end

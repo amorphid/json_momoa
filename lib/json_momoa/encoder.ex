@@ -12,4 +12,8 @@ defimpl Encoder, for: Atom do
   def to_json(false) do
     "false"
   end
+
+  def to_json(nil) do
+    "null"
+  end
 end
