@@ -3,6 +3,18 @@ defmodule JSONMomoaTest do
 
   @subject JSONMomoa
 
+  describe "parsing an element with leading whitespace" do
+    test "trims the leading whitespace" do
+      assert @subject.parse("\n\r\t    true") === {true, ""}
+    end
+  end
+
+  describe "parsing an element with trailing whitespace" do
+    test "does not trim trailing whitespace" do
+      assert @subject.parse("true    \n\r\t") === {true, "    \n\r\t"}
+    end
+  end
+
   describe "parsing empty array" do
     test "return empty list" do
       assert @subject.parse("[]") === {[], ""}

@@ -7,6 +7,12 @@ defmodule JSONMomoa do
   # API #
   #######
 
+  def parse(<<head::8, tail::bits()>>) when head in [?\t, ?\n, ?\r, ?\s] do
+    tail
+    |> String.trim_leading()
+    |> parse()
+  end
+
   def parse("\"" <> data) do
     in_string(data, [])
   end
