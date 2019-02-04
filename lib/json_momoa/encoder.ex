@@ -20,6 +20,12 @@ defimpl Encoder, for: Atom do
   def to_json(nil) do
     "null"
   end
+
+  def to_json(data) do
+    data
+    |> to_string()
+    |> JSONMomoa.Encoder.BitString.to_json()    
+  end
 end
 
 defimpl Encoder, for: BitString do

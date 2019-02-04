@@ -21,6 +21,24 @@ defmodule JSONMomoa.EncoderTest do
     end
   end
 
+  describe "encoding the atom :abc" do
+    test "returns the expected string" do
+      assert @subject.to_json(:abc) === "\"abc\""
+    end
+  end
+
+  describe "encoding the atom :Abc" do
+    test "returns the expected string" do
+      assert @subject.to_json(:Abc) === "\"Abc\""
+    end
+  end
+
+  describe "encoding the atom for the module name Abc" do
+    test "returns the expected string" do
+      assert @subject.to_json(Abc) === "\"Elixir.Abc\""
+    end
+  end
+
   describe "encoding an empty string" do
     test "returns the expected string" do
       assert @subject.to_json("") === "\"\""
