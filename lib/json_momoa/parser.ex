@@ -3,9 +3,17 @@ defmodule JSONMomoa.Parser do
   Documentation for JSONMomoa.
   """
 
+  @type data :: String.t()
+  @type parsed() :: any()
+  @type parsed_and_trailing_data :: {parsed(), trailing_data()}
+  @type trailing_data :: String.t()
+
   #######
   # API #
   #######
+
+  @spec parse(data()) :: parsed_and_trailing_data()
+  def parse(data)
 
   def parse(<<head::8, tail::bits()>>) when head in [?\t, ?\n, ?\r, ?\s] do
     tail
