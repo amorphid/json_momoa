@@ -136,4 +136,16 @@ defmodule JSONMomoa.EncoderTest do
       assert @subject.to_json("hełło") === "\"hełło\""
     end
   end
+
+  describe "encoding a positive integer" do
+    test "returns expected string" do
+      assert @subject.to_json(123) === "123"
+    end
+  end
+
+  describe "encoding a negative integer" do
+    test "returns expected string" do
+      assert @subject.to_json(-123) === "-123"
+    end
+  end
 end

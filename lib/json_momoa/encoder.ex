@@ -93,3 +93,9 @@ defimpl Encoder, for: BitString do
     end
   end
 end
+
+defimpl JSONMomoa.Encoder, for: Integer do
+  def to_json(data) do
+    Integer.to_string(data, 10)
+  end
+end
