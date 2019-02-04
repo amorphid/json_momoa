@@ -184,4 +184,22 @@ defmodule JSONMomoa.EncoderTest do
       assert @subject.to_json(-1.23456e-78) === "-1.23456e-78"
     end
   end
+
+  describe "encoding an empty list" do
+    test "returns expected string" do
+      assert @subject.to_json([]) === "[]"
+    end
+  end
+
+  describe "encoding a 1 element list" do
+    test "returns expected string" do
+      assert @subject.to_json(["abc"]) === "[\"abc\"]"
+    end
+  end
+
+  describe "encoding a 2 element list" do
+    test "returns expected string" do
+      assert @subject.to_json(["abc", 123]) === "[\"abc\",123]"
+    end
+  end
 end

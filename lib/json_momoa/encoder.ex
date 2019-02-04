@@ -105,3 +105,29 @@ defimpl JSONMomoa.Encoder, for: Float do
     Float.to_string(data)
   end
 end
+
+defimpl JSONMomoa.Encoder, for: List do
+  #######
+  # API #
+  #######
+
+  def to_json([]) do
+    "[]"
+  end
+
+  def to_json(data) do
+    in_list(data, "[")
+  end
+
+  ###########
+  # Private #
+  ###########
+
+  defp in_list([head | []], acc) do
+    acc <> JSONMomoa.to_json(head) <> "]"
+  end
+
+  defp in_list([head | tail], acc) do
+    in_list(tail, acc <> JSONMomoa.to_json(head) <> ",")
+  end
+end
