@@ -99,3 +99,9 @@ defimpl JSONMomoa.Encoder, for: Integer do
     Integer.to_string(data, 10)
   end
 end
+
+defimpl JSONMomoa.Encoder, for: Float do
+  def to_json(data) do
+    Float.to_string(data)
+  end
+end

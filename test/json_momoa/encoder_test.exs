@@ -148,4 +148,40 @@ defmodule JSONMomoa.EncoderTest do
       assert @subject.to_json(-123) === "-123"
     end
   end
+
+    describe "encoding a positive float" do
+    test "returns expected string" do
+      assert @subject.to_json(123.456) === "123.456"
+    end
+  end
+
+  describe "encoding a positive float w/ positive exponent" do
+    test "returns expected string" do
+      assert @subject.to_json(1.23456e78) === "1.23456e78"
+    end
+  end
+
+  describe "encoding a positive float w/ positive signed exponent" do
+    test "returns expected string" do
+      assert @subject.to_json(1.23456e+78) === "1.23456e78"
+    end
+  end
+
+  describe "encoding a negative float w/ positive exponent" do
+    test "returns expected string" do
+      assert @subject.to_json(1.23456e78) === "1.23456e78"
+    end
+  end
+
+  describe "encoding a negative float w/ positive signed exponent" do
+    test "returns expected string" do
+      assert @subject.to_json(-1.23456e+78) === "-1.23456e78"
+    end
+  end
+
+  describe "encoding a negative float w/ negative signed exponent" do
+    test "returns expected string" do
+      assert @subject.to_json(-1.23456e-78) === "-1.23456e-78"
+    end
+  end
 end
