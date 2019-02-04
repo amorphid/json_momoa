@@ -159,3 +159,40 @@ defimpl JSONMomoa.Encoder, for: Map do
     in_list(tail, acc <> JSONMomoa.to_json(key) <> ":" <> JSONMomoa.to_json(value) <> ",")
   end
 end
+
+# The following is a hack to suppress dialyzer errors/warnings:
+# - error messages appear for unimplemented types when running 'mix dialyzer'
+# - for each type, error message looks like...
+#   _____________________________________________________________________________
+#   :0:unknown_function
+#   Function JSONMomoa.Encoder.SomeType.__impl__/1 does not exist.
+# - this hack should (probably) be defined after all implementations
+:ok =
+  fn protocol_module -> 
+    [
+      Atom, 
+      BitString, 
+      Float, 
+      Function, 
+      Integer, 
+      List, 
+      Map, 
+      PID, 
+      Port, 
+      Reference, 
+      Tuple
+    ]
+    |> Enum.each(fn type -> 
+      try do 
+        _ = Module.concat(protocol_module, type).module_info
+      rescue
+        _ -> 
+          defimpl protocol_module, for: type do
+            def to_json(_) do
+              raise "encoding not implement for type #{unquote(type)}"
+            end
+          end
+      end
+    end)
+  end.(Encoder)
+
