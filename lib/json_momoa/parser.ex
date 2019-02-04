@@ -146,7 +146,7 @@ defmodule JSONMomoa.Parser do
     |> in_key(acc)
   end
 
-  defp in_key(data, acc) do
+  defp in_key("\"" <> _ = data, acc) do
     {key, data2} = parse(data)
     in_value(data2, key, acc)
   end

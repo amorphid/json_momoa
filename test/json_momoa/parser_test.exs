@@ -218,4 +218,11 @@ defmodule JSONMomoa.ParserTest do
       assert @subject.parse("[\"element0\",\"element1\"]") === {["element0", "element1"], ""}
     end
   end
+
+  describe "parsing an invalid object with a non-string key" do
+    test "raises a function clause error" do
+      func = fn -> JSONMomoa.parse("{{}:null}") end
+      assert_raise FunctionClauseError, func
+    end
+  end
 end
