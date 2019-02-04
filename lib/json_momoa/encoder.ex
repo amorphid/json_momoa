@@ -131,3 +131,31 @@ defimpl JSONMomoa.Encoder, for: List do
     in_list(tail, acc <> JSONMomoa.to_json(head) <> ",")
   end
 end
+
+defimpl JSONMomoa.Encoder, for: Map do
+  #######
+  # API #
+  #######
+
+  def to_json(data) do
+    if map_size(data) == 0 do
+      "{}"
+    else
+      data
+      |> Enum.to_list()
+      |> in_list("{")
+    end
+  end
+
+  ###########
+  # Private #
+  ###########
+
+  defp in_list([{key, value} | []], acc) when is_binary(key) or is_atom(key) do
+    acc <> JSONMomoa.to_json(key) <> ":" <> JSONMomoa.to_json(value) <> "}"
+  end
+
+  defp in_list([{key, value} | tail], acc) when is_binary(key) or is_atom(key) do
+    in_list(tail, acc <> JSONMomoa.to_json(key) <> ":" <> JSONMomoa.to_json(value) <> ",")
+  end
+end

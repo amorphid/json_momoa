@@ -202,4 +202,22 @@ defmodule JSONMomoa.EncoderTest do
       assert @subject.to_json(["abc", 123]) === "[\"abc\",123]"
     end
   end
+
+    describe "encoding an empty map" do
+    test "returns expected string" do
+      assert @subject.to_json([]) === "[]"
+    end
+  end
+
+  describe "encoding a 1 element map" do
+    test "returns expected string" do
+      assert @subject.to_json(%{a: 1}) === "{\"a\":1}"
+    end
+  end
+
+  describe "encoding a 2 element map" do
+    test "returns expected string" do
+      assert @subject.to_json(%{b: 2, a: 1}) === "{\"a\":1,\"b\":2}"
+    end
+  end
 end
