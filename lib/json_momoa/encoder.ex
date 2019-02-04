@@ -1,4 +1,8 @@
 defprotocol JSONMomoa.Encoder do
+  @type data() :: any()
+  @type encoded :: String.t()
+
+  @spec to_json(data()) :: encoded()
   def to_json(data)
 end
 
@@ -95,6 +99,10 @@ defimpl Encoder, for: BitString do
 end
 
 defimpl JSONMomoa.Encoder, for: Integer do
+  #######
+  # API #
+  #######
+
   def to_json(data) do
     Integer.to_string(data, 10)
   end
