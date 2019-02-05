@@ -149,7 +149,7 @@ defmodule JSONMomoa.EncoderTest do
     end
   end
 
-    describe "encoding a positive float" do
+  describe "encoding a positive float" do
     test "returns expected string" do
       assert @subject.to_json(123.456) === "123.456"
     end
@@ -203,7 +203,7 @@ defmodule JSONMomoa.EncoderTest do
     end
   end
 
-    describe "encoding an empty map" do
+  describe "encoding an empty map" do
     test "returns expected string" do
       assert @subject.to_json([]) === "[]"
     end

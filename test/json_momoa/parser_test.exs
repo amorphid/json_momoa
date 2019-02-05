@@ -179,7 +179,7 @@ defmodule JSONMomoa.ParserTest do
 
   describe "parsing the integer -1234567890" do
     test "returns -1234567890" do
-      assert @subject.parse("-1234567890") === {-1234567890, ""}
+      assert @subject.parse("-1234567890") === {-1_234_567_890, ""}
     end
   end
 
@@ -203,7 +203,8 @@ defmodule JSONMomoa.ParserTest do
 
   describe "parsing an object with 2 key value pairs" do
     test "returns the expected map" do
-      assert @subject.parse("{\"key0\":\"value0\",\"key1\":true}") === {%{"key0" => "value0", "key1" => true}, ""}
+      assert @subject.parse("{\"key0\":\"value0\",\"key1\":true}") ===
+               {%{"key0" => "value0", "key1" => true}, ""}
     end
   end
 
@@ -215,7 +216,8 @@ defmodule JSONMomoa.ParserTest do
 
   describe "parsing an array with 2 elements" do
     test "returns the expected list" do
-      assert @subject.parse("[\"element0\",\"element1\"]") === {["element0", "element1"], ""}
+      assert @subject.parse("[\"element0\",\"element1\"]") ===
+               {["element0", "element1"], ""}
     end
   end
 
