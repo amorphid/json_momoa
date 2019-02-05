@@ -1,11 +1,8 @@
 # JSONMomoa
 
-**TODO: Add description**
+A streaming JSON parser/encoder written in pure Elixir.
 
 ## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `json_momoa` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
@@ -15,7 +12,19 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/json_momoa](https://hexdocs.pm/json_momoa).
+## Tests
 
+    $ mix tests
+
+## Documentation
+
+[https://hexdocs.pm/json_momoa](https://hexdocs.pm/json_momoa).
+
+## License
+
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+a](https://hexdocs.pm/json_momoa).
+
+## License
+
+[Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0)
