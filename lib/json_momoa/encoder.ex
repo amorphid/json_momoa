@@ -1,4 +1,6 @@
 defprotocol JSONMomoa.Encoder do
+  @moduledoc false
+  
   @type data() :: any()
   @type encoded :: String.t()
 

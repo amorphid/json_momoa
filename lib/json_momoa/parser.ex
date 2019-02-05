@@ -1,7 +1,5 @@
 defmodule JSONMomoa.Parser do
-  @moduledoc """
-  Documentation for JSONMomoa.
-  """
+  @moduledoc false
 
   @type data :: String.t()
   @type parsed() :: any()
